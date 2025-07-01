@@ -2,7 +2,7 @@ from datetime import datetime
 
 class DatosDAO:
     def __init__(self, db):
-        self.db = db  # Espera una instancia de Database
+        self.db = db
 
     def guardar_datos(self, valores, media, desviacion):
         query = """

@@ -1,6 +1,5 @@
 import mysql.connector
 from mysql.connector import Error
-from datetime import datetime
 
 class Database:
     def __init__(self, host="localhost", user="root", password="", database="ds"):
@@ -37,26 +36,6 @@ class Database:
         self.cursor.execute(query)
         self.connection.commit()
 
-    def guardar_datos(self, valores, media, desviacion):
-        query = """
-        INSERT INTO datos (datos, media, desviacion_estandar, cantidad, fecha)
-        VALUES (%s, %s, %s, %s, %s);
-        """
-        fecha_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        self.cursor.execute(query, (
-            ",".join(map(str, valores)),
-            media,
-            desviacion,
-            len(valores),
-            fecha_actual
-        ))
-        self.connection.commit()
-
-    def obtener_todos(self):
-        query = "SELECT * FROM datos;"
-        self.cursor.execute(query)
-        return self.cursor.fetchall()
-
-    def cerrar(self):
+    def close(self):
         self.cursor.close()
         self.connection.close()

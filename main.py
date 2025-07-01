@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from manual import desviacion_estandar_manual
 from automatico import desviacion_estandar_numpy
+from Database.database import Database
 
 # Datos predefinidos
 speed = [86, 87, 88, 86, 87, 85, 86]
@@ -45,6 +46,7 @@ def graficar_datos(datos, desviacion):
 
 
 def main():
+    db = Database()
     opcion = menu()
     if opcion == "1":
         datos = pedir_numeros()
@@ -53,14 +55,27 @@ def main():
         print("Usando datos predefinidos:", datos)
     else:
         print("Opción no válida.")
+        db.cerrar()
         return
 
     desv_manual = desviacion_estandar_manual(datos)
     desv_numpy = desviacion_estandar_numpy(datos)
+    media = sum(datos) / len(datos)
+
     print(f"Desviación estándar (manual): {desv_manual:.2f}")
     print(f"Desviación estándar (numpy): {desv_numpy:.2f}")
 
+    # Guardar en la base de datos
+    db.guardar_datos(datos, media, desv_numpy)
+
     graficar_datos(datos, desv_numpy)
+
+    # Mostrar historial
+    print("\nHistorial de datos guardados:")
+    for fila in db.obtener_todos():
+        print(f"ID: {fila['id']}, Datos: {fila['datos']}, Media: {fila['media']}, Desviación: {fila['desviacion_estandar']}, Cantidad: {fila['cantidad']}, Fecha: {fila['fecha']}")
+
+    db.cerrar()
 
 
 if __name__ == "__main__":
